@@ -30,8 +30,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
         for (auto &[topic, subscribeData] : *mqtt->getTopicCallbackMap())
         {
-            Serial.printf("[MQTT] Subscribing to topic: %s\n", topic.c_str());
-            msg_id = esp_mqtt_client_subscribe(client, topic.c_str(), subscribeData.qos);
+            esp_mqtt_client_subscribe(client, topic.c_str(), subscribeData.qos);
         }
 
         break;
@@ -41,8 +40,6 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
     case MQTT_EVENT_SUBSCRIBED:
         log_i("MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
-        msg_id = esp_mqtt_client_publish(client, "/mytopic/qos0", "data", 0, 0, 0);
-        log_i("sent publish successfully, msg_id=%d", msg_id);
         break;
 
     case MQTT_EVENT_UNSUBSCRIBED:
