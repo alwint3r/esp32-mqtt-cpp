@@ -102,7 +102,7 @@ void MqttClient::begin(const std::string &host, int port, const std::string &cli
     start();
 }
 
-void MqttClient::begin(const std::string &uri, const std::string &clientId = "", const char *cert = nullptr)
+void MqttClient::begin(const std::string &uri, const std::string &clientId, const char *cert)
 {
     uri_ = uri;
     esp_mqtt_client_config_t mqtt_cfg = {};
