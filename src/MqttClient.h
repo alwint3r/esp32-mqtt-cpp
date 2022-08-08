@@ -27,7 +27,6 @@ public:
 
 using MqttSubscribeCallback = std::function<void(std::shared_ptr<MqttSubscribeData>)>;
 
-
 class SubscribeMapData
 {
 public:
@@ -51,21 +50,26 @@ class MqttClient
 public:
     MqttClient();
     void begin(const std::string &host, int port, const std::string &clientId);
+    void begin(const std::string &uri, const std::string &clientId = "", const char *cert = nullptr);
     void subscribe(std::string topic, int qos, MqttSubscribeCallback callback);
     void publish(const std::string topic, const std::string message, int qos, bool retain);
 
     void handleSubscriptionData(const esp_mqtt_event_handle_t event);
 
     using topic_callback_map_t = std::map<std::string, SubscribeMapData>;
-    topic_callback_map_t* getTopicCallbackMap()
+    topic_callback_map_t *getTopicCallbackMap()
     {
         return &topic_cb_map_;
     }
 
 private:
+    void start();
+
+private:
     std::string host_;
     int port_;
     std::string clientId_;
+    std::string uri_;
 
     topic_callback_map_t topic_cb_map_;
 

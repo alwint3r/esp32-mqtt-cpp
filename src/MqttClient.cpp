@@ -99,6 +99,37 @@ void MqttClient::begin(const std::string &host, int port, const std::string &cli
     mqtt_cfg.buffer_size = 4096;
 
     client_ = esp_mqtt_client_init(&mqtt_cfg);
+    start();
+}
+
+void MqttClient::begin(const std::string &uri, const std::string &clientId = "", const char *cert = nullptr)
+{
+    uri_ = uri;
+    esp_mqtt_client_config_t mqtt_cfg = {};
+
+    if (clientId.length() < 1)
+    {
+        mqtt_cfg.set_null_client_id = true;
+    }
+    else
+    {
+        mqtt_cfg.set_null_client_id = false;
+        mqtt_cfg.client_id = clientId.c_str();
+    }
+
+    mqtt_cfg.uri = uri.c_str();
+
+    if (cert != nullptr)
+    {
+        mqtt_cfg.cert_pem = cert;
+    }
+
+    client_ = esp_mqtt_client_init(&mqtt_cfg);
+    start();
+}
+
+void MqttClient::start()
+{
     esp_mqtt_client_register_event(client_, static_cast<esp_mqtt_event_id_t>(ESP_EVENT_ANY_ID), mqtt_event_handler, this);
     esp_mqtt_client_start(client_);
 }
